@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Professional Invoice Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --success-color: #4bb543;
+      --danger-color: #f94144;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --gray-color: #6c757d;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 900px;
+      margin: 20px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .logo-text h2 {
+      margin: 0;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .logo-text p {
+      margin: 0;
+      color: var(--gray-color);
+      font-size: 0.9rem;
+    }
+
+    .invoice-info {
+      text-align: right;
+    }
+
+    .invoice-info p {
+      margin: 5px 0;
+      color: var(--gray-color);
+    }
+
+    .invoice-info strong {
+      color: var(--dark-color);
+    }
+
+    table {
+      width: 100%;
+      margin: 25px 0;
+      border-collapse: collapse;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    table thead {
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+
+    table th {
+      padding: 15px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    table tbody tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(75, 181, 67, 0.3);
+    }
+
+    .btn-success:hover {
+      background-color: #3a9a32;
+      transform: translateY(-2px);
+    }
+
+    .total-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .total-box {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .grand-total {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      border-top: 2px solid #eee;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      gap: 15px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--gray-color);
+    }
+
+    .empty-state img {
+      width: 120px;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .print-container, .print-container * {
+        visibility: visible;
+      }
+      .print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .invoice-info {
+        text-align: left;
+        width: 100%;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .total-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/3710/3710304.png" alt="Invoice Logo">
+        <div class="logo-text">
+          <h2>Invoice Generator</h2>
+          <p>Create professional invoices in minutes</p>
+        </div>
+      </div>
+      <div class="invoice-info">
+        <p><strong>Invoice #:</strong> <span id="invoiceNumber">INV-${Math.floor(1000 + Math.random() * 9000)}</span></p>
+        <p><strong>Date:</strong> <span id="invoiceDate">${new Date().toLocaleDateString()}</span></p>
+      </div>
+    </div>
+
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Unit Price (₹)</th>
+          <th>Total (₹)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceBody">
+        <tr class="empty-state-row">
+          <td colspan="5">
+            <div class="empty-state">
+              <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="Empty invoice">
+              <h3>No items added yet</h3>
+              <p>Click "Add Item" to start creating your invoice</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="total-section">
+      <div class="total-box">
+        <div class="total-row">
+          <span>Subtotal:</span>
+          <span id="subtotal">₹0.00</span>
+        </div>
+        <div class="total-row">
+          <span>Tax (18%):</span>
+          <span id="tax">₹0.00</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>Grand Total:</span>
+          <span id="grandTotal">₹0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-primary no-print" onclick="addRow()">
+        <i class="fas fa-plus-circle"></i> Add Item
+      </button>
+      <button class="btn btn-success no-print" onclick="printInvoice()">
+        <i class="fas fa-print"></i> Print Invoice
+      </button>
+      <button class="btn btn-danger no-print" onclick="clearInvoice()">
+        <i class="fas fa-trash-alt"></i> Clear All
+      </button>
+    </div>
+    
+    <!-- Hidden print container -->
+    <div id="printContainer" class="print-container" style="display: none;"></div>
+  </div>
+
+  <script>
+    // Initialize with empty state
+    document.addEventListener('DOMContentLoaded', function() {
+      updateTotals();
+    });
+
+    function addRow() {
+      const table = document.getElementById("invoiceBody");
+      const emptyStateRow = document.querySelector(".empty-state-row");
+      
+      // Remove empty state if it exists
+      if (emptyStateRow) {
+        emptyStateRow.remove();
+      }
+
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td><input type="text" placeholder="Product or service" class="item-name" oninput="updateTotals()" /></td>
+        <td><input type="number" value="1" min="1" class="item-qty" oninput="updateTotals()" /></td>
+        <td><input type="number" value="0" min="0" step="0.01" class="item-price" oninput="updateTotals()" /></td>
+        <td class="item-total">₹0.00</td>
+        <td>
+          <button class="btn btn-danger no-print" style="padding: 8px 12px;" onclick="removeRow(this)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      `;
+
+      table.appendChild(row);
+      
+      // Focus on the new item name field
+      row.querySelector('.item-name').focus();
+    }
+
+    function removeRow(button) {
+      const row = button.closest("tr");
+      row.remove();
+      updateTotals();
+      
+      // Show empty state if no rows left
+      if (document.querySelectorAll("#invoiceBody tr").length === 0) {
+        showEmptyState();
+      }
+    }
+
+    function showEmptyState() {
+      const table = document.getElementById("invoiceBody");
+      table.innerHTML = `
+        <tr class="empty-state-row">
+          <td colspan="5">
+            <div class="empty-state">
+              <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="Empty invoice">
+              <h3>No items added yet</h3>
+              <p>Click "Add Item" to start creating your invoice</p>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function updateTotals() {
+      const rows = document.querySelectorAll("#invoiceBody tr:not(.empty-state-row)");
+      let subtotal = 0;
+
+      rows.forEach(row => {
+        const qty = parseFloat(row.querySelector(".item-qty").value) || 0;
+        const price = parseFloat(row.querySelector(".item-price").value) || 0;
+        const total = qty * price;
+        row.querySelector(".item-total").textContent = `₹${total.toFixed(2)}`;
+        subtotal += total;
+      });
+
+      const tax = subtotal * 0.18;
+      const grandTotal = subtotal + tax;
+
+      document.getElementById("subtotal").textContent = `₹${subtotal.toFixed(2)}`;
+      document.getElementById("tax").textContent = `₹${tax.toFixed(2)}`;
+      document.getElementById("grandTotal").textContent = `₹${grandTotal.toFixed(2)}`;
+    }
+
+    function printInvoice() {
+      const rows = document.querySelectorAll("#invoiceBody tr:not(.empty-state-row)");
+      if (rows.length === 0) {
+        alert("Please add at least one item to the invoice before printing.");
+        return;
+      }
+      
+      // Create print content
+      const printContent = `
+        <div class="print-header">
+          <div class="print-logo">Invoice Generator</div>
+          <div>
+            <p><strong>Invoice #:</strong> ${document.getElementById("invoiceNumber").textContent}</p>
+            <p><strong>Date:</strong> ${document.getElementById("invoiceDate").textContent}</p>
+          </div>
+        </div>
+        
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Array.from(rows).map(row => `
+              <tr>
+                <td>${row.querySelector('.item-name').value || 'N/A'}</td>
+                <td>${row.querySelector('.item-qty').value}</td>
+                <td>₹${parseFloat(row.querySelector('.item-price').value).toFixed(2)}</td>
+                <td>₹${row.querySelector('.item-total').textContent.replace('₹','')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        
+        <div class="print-total">
+          <p>Subtotal: ${document.getElementById("subtotal").textContent}</p>
+          <p>Tax (18%): ${document.getElementById("tax").textContent}</p>
+          <p class="print-grand-total">Grand Total: ${document.getElementById("grandTotal").textContent}</p>
+        </div>
+        
+        <div class="print-footer">
+          <p>Thank you for your business!</p>
+          <p>Generated by Professional Invoice Generator</p>
+        </div>
+      `;
+      
+      // Insert into hidden print container
+      const printContainer = document.getElementById("printContainer");
+      printContainer.innerHTML = printContent;
+      printContainer.style.display = 'block';
+      
+      // Use browser's print functionality
+      window.print();
+      
+      // Hide the print container after printing
+      setTimeout(() => {
+        printContainer.style.display = 'none';
+        printContainer.innerHTML = '';
+      }, 500);
+    }
+
+    function clearInvoice() {
+      if (confirm("Are you sure you want to clear the entire invoice?")) {
+        showEmptyState();
+        document.getElementById("subtotal").textContent = "₹0.00";
+        document.getElementById("tax").textContent = "₹0.00";
+        document.getElementById("grandTotal").textContent = "₹0.00";
+        document.getElementById("invoiceNumber").textContent = "INV-" + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById("invoiceDate").textContent = new Date().toLocaleDateString();
+      }
+    }
+  </script>
+</body>
+</html>
